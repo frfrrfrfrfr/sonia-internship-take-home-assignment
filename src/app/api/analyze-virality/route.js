@@ -108,12 +108,48 @@ function analyzeVideoSemantically(video) {
   return { hook, whyViral, cta, score, contentIdea };
 }
 
+function cleanTitleSpelling(text) {
+  if (!text) return "";
+  let cleaned = text;
+  
+  const typoMap = [
+    { typo: "canging", correction: "changing" },
+    { typo: "pyclgi", correction: "psychologist" },
+    { typo: "pyclg", correction: "psychologist" },
+    { typo: "pyschology", correction: "psychology" },
+    { typo: "pyschologist", correction: "psychologist" },
+    { typo: "anxity", correction: "anxiety" },
+    { typo: "depresion", correction: "depression" },
+    { typo: "selfcare", correction: "self care" },
+    { typo: "midfulness", correction: "mindfulness" },
+    { typo: "fm", correction: "from" },
+    { typo: "ip", correction: "tip" }
+  ];
+  
+  typoMap.forEach(({ typo, correction }) => {
+    const regex = new RegExp(`\\b${typo}\\b`, 'gi');
+    cleaned = cleaned.replace(regex, (match) => {
+      if (match[0] === match[0].toUpperCase()) {
+        return correction[0].toUpperCase() + correction.slice(1);
+      }
+      return correction;
+    });
+  });
+  
+  return cleaned;
+}
+
 export async function POST(request) {
   try {
     const { video } = await request.json();
 
     if (!video) {
       return NextResponse.json({ error: 'Video data is required' }, { status: 400 });
+    }
+
+    // Auto-correct spelling typos in video title
+    if (video.title) {
+      video.title = cleanTitleSpelling(video.title);
     }
 
     // ─────────────────────────────────────────────────────────────

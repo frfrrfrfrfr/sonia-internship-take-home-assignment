@@ -375,6 +375,37 @@ export async function POST(request) {
       console.log(`[fetch-videos] Only ${topVideos.length} videos met all criteria for "${topic}" — no fake data backfill`);
     }
     
+function cleanTitleSpelling(text) {
+  if (!text) return "";
+  let cleaned = text;
+  
+  const typoMap = [
+    { typo: "canging", correction: "changing" },
+    { typo: "pyclgi", correction: "psychologist" },
+    { typo: "pyclg", correction: "psychologist" },
+    { typo: "pyschology", correction: "psychology" },
+    { typo: "pyschologist", correction: "psychologist" },
+    { typo: "anxity", correction: "anxiety" },
+    { typo: "depresion", correction: "depression" },
+    { typo: "selfcare", correction: "self care" },
+    { typo: "midfulness", correction: "mindfulness" },
+    { typo: "fm", correction: "from" },
+    { typo: "ip", correction: "tip" }
+  ];
+  
+  typoMap.forEach(({ typo, correction }) => {
+    const regex = new RegExp(`\\b${typo}\\b`, 'gi');
+    cleaned = cleaned.replace(regex, (match) => {
+      if (match[0] === match[0].toUpperCase()) {
+        return correction[0].toUpperCase() + correction.slice(1);
+      }
+      return correction;
+    });
+  });
+  
+  return cleaned;
+}
+
     const results = topVideos.map((v, i) => {
       const views = v.views;
       const likes = Math.floor(views * (Math.random() * 0.08 + 0.04));
@@ -394,7 +425,7 @@ export async function POST(request) {
 
       return {
         id: `${topic}-${Date.now()}-${i}`,
-        title: v.title,
+        title: cleanTitleSpelling(v.title),
         topic,
         platform: selectedPlatform,
         url: videoUrl,
