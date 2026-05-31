@@ -9,9 +9,14 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.100.1",
+    "axios": "^1.16.1",
+    "framer-motion": "^12.40.0",
+    "lucide-react": "^1.17.0",
     "next": "16.2.6",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "yt-search": "^2.13.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
