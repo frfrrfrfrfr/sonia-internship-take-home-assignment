@@ -5,11 +5,21 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Play, CheckCircle2, Activity, Video, Camera, Music, ShieldAlert, ExternalLink, Sparkles, Film, TrendingUp, Eye, Zap, Clock } from "lucide-react";
 
 const SAMPLE_TOPICS = [
-  "mindful mornings", 
-  "managing daily stress", 
-  "gentle self care", 
-  "grounding techniques", 
-  "emotional wellness"
+  "mental health tips",
+  "anxiety relief",
+  "self care routine",
+  "stress management",
+  "morning routine wellness",
+  "mindfulness meditation",
+  "healthy habits",
+  "emotional healing",
+  "burnout recovery",
+  "positive affirmations",
+  "therapy tips",
+  "sleep hacks",
+  "journaling for mental health",
+  "breathing exercises",
+  "confidence building",
 ];
 
 const PLATFORMS = ["YouTube Shorts", "Instagram Reels", "TikTok"];
