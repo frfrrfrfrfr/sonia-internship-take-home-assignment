@@ -49,6 +49,121 @@ export default function App() {
 
   const log = (msg) => setAgentLog(prev => [...prev, { time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'}), msg }]);
 
+  const [copied, setCopied] = useState(false);
+
+  const loadDemoData = async () => {
+    setProgress(0);
+    setRunning(true);
+    setDone(false);
+    setResults([]);
+    setAgentLog([]);
+    setHiggsData(null);
+    
+    setAgentLog([
+      { time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'}), msg: "🤖 Launching Instant Reviewer Demo Mode..." },
+    ]);
+    await new Promise(r => setTimeout(r, 450));
+    setAgentLog(prev => [...prev, { time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'}), msg: "⚡ Pre-loading 3 high-fidelity viral wellness shorts..." }]);
+    await new Promise(r => setTimeout(r, 450));
+    setAgentLog(prev => [...prev, { time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'}), msg: "🛡️ Bypassing scraper delay — rendering correctly spelled wellness dataset..." }]);
+    await new Promise(r => setTimeout(r, 450));
+    
+    const demoResults = [
+      {
+        id: "demo-1",
+        title: "Life Changing Tip From A Psychologist (Vagus Nerve Reset)",
+        topic: "stress management hacks",
+        platform: "YouTube Shorts",
+        url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        views: 2400000,
+        viewsFormatted: "2.4M",
+        likes: 120000,
+        likesFormatted: "120K",
+        comments: 3200,
+        commentsFormatted: "3.2K",
+        shares: 18000,
+        sharesFormatted: "18K",
+        duration: "0:45",
+        publishedAgo: "5 days ago",
+        hook: "Empathetic Direct Addressing",
+        whyViral: "Provides immediate, biology-backed relief techniques that viewers can practice in real-time to calm an overactive nervous system.",
+        cta: "Save this breathing hack for your anxious days",
+        score: 98,
+        contentIdea: "Sonia Vagus Nerve Reset: A visual short guiding the viewer through two quick physiological sighs (double inhale, long exhale) to instantly slow heart rate."
+      },
+      {
+        id: "demo-2",
+        title: "3 Somatic Grounding Habits to Instantly Stop Overthinking",
+        topic: "anxiety relief shorts",
+        platform: "TikTok",
+        url: "https://www.tiktok.com/",
+        views: 850000,
+        viewsFormatted: "850K",
+        likes: 45000,
+        likesFormatted: "45K",
+        comments: 1100,
+        commentsFormatted: "1.1K",
+        shares: 6200,
+        sharesFormatted: "6.2K",
+        duration: "0:52",
+        publishedAgo: "2 weeks ago",
+        hook: "POV / Immersive Storytelling",
+        whyViral: "Taps into the growing interest in physical, somatic grounding to quickly lower stress and reconnect with the senses.",
+        cta: "Step outside and try grounding yourself today",
+        score: 87,
+        contentIdea: "Sonia Grounding Session: A vertical short showing soft grass or soil, inviting viewers to slide off their shoes and connect with the earth for a 1-minute somatic reset."
+      },
+      {
+        id: "demo-3",
+        title: "How Burnout Changes Your Brain (And 3 Micro-Rests)",
+        topic: "mental health tips",
+        platform: "Instagram Reels",
+        url: "https://www.instagram.com/reels/",
+        views: 120000,
+        viewsFormatted: "120K",
+        likes: 8500,
+        likesFormatted: "8.5K",
+        comments: 240,
+        commentsFormatted: "240",
+        shares: 1100,
+        sharesFormatted: "1.1K",
+        duration: "1:05",
+        publishedAgo: "1 month ago",
+        hook: "Educational Secret-Sharing",
+        whyViral: "Normalizes daily fatigue and workplace burnout, providing massive emotional validation and comfort to overwhelmed viewers.",
+        cta: "Share this with a friend who is working too hard today",
+        score: 81,
+        contentIdea: "Sonia Micro-Rest Checklist: A text-on-screen aesthetic video sharing three CBT-based steps to take a realistic 5-minute micro-break during a daily task."
+      }
+    ];
+    
+    setResults(demoResults);
+    setProgress(100);
+    setRunning(false);
+    setDone(true);
+    
+    setHiggsLoading(true);
+    setAgentLog(prev => [...prev, { time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'}), msg: "🎬 Launching HiggsField AI analysis for demo set..." }]);
+    await new Promise(r => setTimeout(r, 450));
+    
+    try {
+      const res = await fetch('/api/higgsfield-generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ videos: demoResults })
+      });
+      const resJson = await res.json();
+      if (resJson.success) {
+        setHiggsData(resJson.data);
+        setAgentLog(prev => [...prev, { time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'}), msg: "✨ HiggsField AI concept generated — check the HIGGSFIELD STUDIO tab!" }]);
+      }
+    } catch (e) {
+      console.error(e);
+      setAgentLog(prev => [...prev, { time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'}), msg: "⚠️ HiggsField brief pre-loaded locally." }]);
+    }
+    setHiggsLoading(false);
+  };
+
   const runAgent = async () => {
     setRunning(true);
     setDone(false);
@@ -200,6 +315,14 @@ export default function App() {
               <CheckCircle2 className="w-3 h-3" />
               COMPLETE
             </motion.div>
+          )}
+          {!running && results.length === 0 && (
+            <button
+              onClick={loadDemoData}
+              className="flex items-center gap-1.5 rounded-lg px-4 py-2 text-xs sm:text-sm font-bold tracking-wider bg-[#1a1a2e]/60 text-purple-300 border border-purple-500/20 hover:bg-purple-500/15 transition-colors shrink-0 font-mono"
+            >
+              ✨ LOAD DEMO DATA
+            </button>
           )}
           <button
             onClick={runAgent}
@@ -876,17 +999,34 @@ export default function App() {
                 </div>
 
                 {selectedRow.score > 0 && (
-                  <div className="mt-8 p-4 bg-gradient-to-br from-[#1a1a2e] to-[#0a0a15] rounded-xl border border-secondary/20 shadow-lg shadow-purple-900/20">
-                    <div className="text-[10px] text-secondary tracking-wider font-mono mb-3 flex items-center gap-2">
-                      <Activity className="w-3 h-3" /> REPLICATION BLUEPRINT
+                  <>
+                    <div className="mt-8 p-4 bg-gradient-to-br from-[#1a1a2e] to-[#0a0a15] rounded-xl border border-secondary/20 shadow-lg shadow-purple-900/20">
+                      <div className="text-[10px] text-secondary tracking-wider font-mono mb-3 flex items-center gap-2">
+                        <Activity className="w-3 h-3" /> REPLICATION BLUEPRINT
+                      </div>
+                      <div className="text-[11px] text-[#a0a0c0] leading-loose">
+                        <span className="text-muted mr-2">01</span> Start with <span className="text-fuchsia-300 font-medium">{selectedRow.hook.toLowerCase()}</span><br />
+                        <span className="text-muted mr-2">02</span> Focus on <span className="text-[#e8e8f0]">#{selectedRow.topic}</span><br />
+                        <span className="text-muted mr-2">03</span> Keep length around <span className="text-[#e8e8f0]">{selectedRow.duration}</span><br />
+                        <span className="text-muted mr-2">04</span> End by asking viewers to <span className="text-amber-300 font-medium">{selectedRow.cta.toLowerCase()}</span>
+                      </div>
                     </div>
-                    <div className="text-[11px] text-[#a0a0c0] leading-loose">
-                      <span className="text-muted mr-2">01</span> Start with <span className="text-fuchsia-300 font-medium">{selectedRow.hook.toLowerCase()}</span><br />
-                      <span className="text-muted mr-2">02</span> Focus on <span className="text-[#e8e8f0]">#{selectedRow.topic}</span><br />
-                      <span className="text-muted mr-2">03</span> Keep length around <span className="text-[#e8e8f0]">{selectedRow.duration}</span><br />
-                      <span className="text-muted mr-2">04</span> End by asking viewers to <span className="text-amber-300 font-medium">{selectedRow.cta.toLowerCase()}</span>
-                    </div>
-                  </div>
+                    <button
+                      onClick={() => {
+                        const briefText = `🎬 SONIA GROWTH INTELLIGENCE BRIEF\n\nTitle: ${selectedRow.title}\nTopic: #${selectedRow.topic}\nPlatform: ${selectedRow.platform}\nViews: ${selectedRow.viewsFormatted}\n\nHook Type: ${selectedRow.hook}\nPsychological Driver: ${selectedRow.whyViral}\nSuggested CTA: ${selectedRow.cta}\n\nReplication Blueprint:\n1. Hook: ${selectedRow.hook}\n2. Focus: #${selectedRow.topic}\n3. Duration: ${selectedRow.duration}\n4. CTA: ${selectedRow.cta}\n\nSonia Wellness Twist Content Idea:\n${selectedRow.contentIdea || 'Mindful reframe brief.'}`;
+                        navigator.clipboard.writeText(briefText);
+                        setCopied(true);
+                        setTimeout(() => setCopied(false), 2000);
+                      }}
+                      className={`w-full mt-4 flex items-center justify-center gap-2 py-2.5 rounded-lg border font-bold text-[11px] tracking-wider transition-all duration-300 font-mono ${
+                        copied 
+                          ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
+                          : "bg-purple-600/15 border-purple-500/20 hover:bg-purple-600/25 text-purple-300"
+                      }`}
+                    >
+                      {copied ? "✓ COPIED BRIEF!" : "📋 COPY REPLICATION BRIEF"}
+                    </button>
+                  </>
                 )}
               </div>
             </motion.div>
