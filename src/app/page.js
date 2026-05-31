@@ -42,7 +42,7 @@ export default function App() {
   const logEndRef = useRef(null);
 
   useEffect(() => {
-    logEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    logEndRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }, [agentLog]);
 
   const log = (msg) => setAgentLog(prev => [...prev, { time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'}), msg }]);
@@ -158,7 +158,7 @@ export default function App() {
   const commonCtas = [...new Set(topPerformers.map(r => r.cta))].slice(0, 3);
 
   return (
-    <div className="min-h-screen bg-[#030305] text-[#e8e8f0] font-sans flex flex-col overflow-hidden relative">
+    <div className="h-screen max-h-screen bg-[#030305] text-[#e8e8f0] font-sans flex flex-col overflow-hidden relative">
       {/* Premium ambient glow mesh elements */}
       <div className="absolute top-[-10%] left-[20%] w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[150px] pointer-events-none z-0" />
       <div className="absolute bottom-[-10%] right-[10%] w-[600px] h-[600px] bg-fuchsia-600/5 rounded-full blur-[180px] pointer-events-none z-0" />
