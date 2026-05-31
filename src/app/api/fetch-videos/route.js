@@ -66,14 +66,14 @@ function isWithinOneWeek(publishedText) {
 /**
  * 1-Month Recency check for secondary fallback filtering.
  */
-function isWithinSixMonths(publishedText) {
+function isWithinOneYear(publishedText) {
   if (!publishedText) return false;
   const lower = publishedText.toLowerCase().trim();
   const cleaned = lower.replace(/^streamed\s+/i, '');
   
   const match = cleaned.match(/(\d+)\s*(seconds?|minutes?|hours?|days?|weeks?|months?|years?|s|m|h|d|w|mo|y)\s*ago/);
   if (!match) {
-    if (cleaned.includes('just now') || cleaned === 'today' || cleaned === 'now' || cleaned.includes('week') || cleaned.includes('month')) return true;
+    if (cleaned.includes('just now') || cleaned === 'today' || cleaned === 'now' || cleaned.includes('week') || cleaned.includes('month') || cleaned.includes('year')) return true;
     return false;
   }
   
@@ -97,7 +97,9 @@ function isWithinSixMonths(publishedText) {
     case 'w':
       return true;
     case 'mo':
-      return num <= 6;
+      return num <= 12;
+    case 'y':
+      return num <= 1;
     default:
       return false;
   }
@@ -292,28 +294,30 @@ export async function POST(request) {
 
     // ─────────────────────────────────────────────────────────────
     // STRICT BOUNDARY ENFORCEMENT
+    // ─────────────────────────────────────────────────────────────
+    // STRICT BOUNDARY ENFORCEMENT
     // 1. Must be short-form (durationSecs <= 180 seconds)
     // 2. Must be highly viral (views >= 100,000)
-    // 3. Must be uploaded within the last 6 months (180 days)
+    // 3. Must be uploaded within the last 1 year (365 days)
     // ─────────────────────────────────────────────────────────────
     let filtered = uniqueVideos.filter(v => {
       const isShort = v.durationSecs > 0 ? v.durationSecs <= 180 : true;
       const isViral = v.views >= 100000;
       
-      // Date check: must be within 6 months
-      const isRecent = v.publishedAgo ? isWithinSixMonths(v.publishedAgo) : false; 
+      // Date check: must be within 1 year
+      const isRecent = v.publishedAgo ? isWithinOneYear(v.publishedAgo) : false; 
       
       return isShort && isViral && isRecent;
     });
     
-    console.log(`[fetch-videos] After filtering: ${filtered.length} videos pass all boundaries for "${topic}" (6-month window)`);
+    console.log(`[fetch-videos] After filtering: ${filtered.length} videos pass all boundaries for "${topic}" (1-year window)`);
     
     // GRACEFUL FAILBACK SEARCH Strategy:
     // If the topic is extremely niche and yields 0 strictly monthly viral results,
     // we search highly active, guaranteed trending general wellness/self-care terms from this month
     // to keep the dashboard working with actual, real, monthly viral mental wellness videos!
     if (filtered.length === 0) {
-      console.log(`[fetch-videos] 0 specific videos met 6-month/100k boundaries. Scraping high-volume trending wellness queries...`);
+      console.log(`[fetch-videos] 0 specific videos met 1-year/100k boundaries. Scraping high-volume trending wellness queries...`);
       
       const trendingWellnessQueries = [
         "mental health hacks #shorts",
@@ -336,8 +340,8 @@ export async function POST(request) {
         const isShort = v.durationSecs > 0 ? v.durationSecs <= 180 : true;
         const isViral = v.views >= 100000;
         
-        // 6-month recency verification
-        const isRecent = v.publishedAgo ? isWithinSixMonths(v.publishedAgo) : false;
+        // 1-year recency verification
+        const isRecent = v.publishedAgo ? isWithinOneYear(v.publishedAgo) : false;
         
         return isShort && isViral && isRecent;
       });
@@ -346,15 +350,15 @@ export async function POST(request) {
     }
 
     // Secondary fallback: if still 0 videos (e.g. YouTube search API throttled or extreme outlier date),
-    // relax views to >= 10,000 and date to <= 6 months, but STILL reject anything older or undocumented.
+    // relax views to >= 10,000 and date to <= 1 year, but STILL reject anything older or undocumented.
     if (filtered.length === 0) {
-      console.log(`[fetch-videos] Fallback yields 0 videos. Applying secondary fallback: views>=10k & age<=6 months`);
+      console.log(`[fetch-videos] Fallback yields 0 videos. Applying secondary fallback: views>=10k & age<=1 year`);
       filtered = uniqueVideos.filter(v => {
         const isShort = v.durationSecs > 0 ? v.durationSecs <= 180 : true;
         const isViralFallback = v.views >= 10000;
         
-        // Must be under 6 months strictly!
-        const isRecentFallback = v.publishedAgo ? isWithinSixMonths(v.publishedAgo) : false;
+        // Must be under 1 year strictly!
+        const isRecentFallback = v.publishedAgo ? isWithinOneYear(v.publishedAgo) : false;
         
         return isShort && isViralFallback && isRecentFallback;
       });

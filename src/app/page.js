@@ -57,7 +57,7 @@ export default function App() {
 
     log("🤖 Agent initialized — connecting to YouTube Scraper...");
     await new Promise(r => setTimeout(r, 600));
-    log("📅 Date Boundary: ENFORCED — YouTube sp=EgQIBBAB filter (6 Months) + server-side validation.");
+    log("📅 Date Boundary: ENFORCED — YouTube sp=EgQIBBAB filter (1 Year) + server-side validation.");
     await new Promise(r => setTimeout(r, 400));
     log("👁️ View Threshold: ENFORCED — minimum 100,000 views required.");
     await new Promise(r => setTimeout(r, 300));
@@ -72,7 +72,7 @@ export default function App() {
     for (let i = 0; i < SAMPLE_TOPICS.length; i++) {
       const topic = SAMPLE_TOPICS[i];
       setCurrentTopic(topic);
-      log(`📡 Scraping YouTube for: "${topic}" — filtering by 6 Months + Shorts...`);
+      log(`📡 Scraping YouTube for: "${topic}" — filtering by 1 Year + Shorts...`);
       
       try {
         const fetchRes = await fetch('/api/fetch-videos', {
@@ -84,7 +84,7 @@ export default function App() {
         
         if (fetchData.success) {
           if (fetchData.data.length === 0) {
-            log(`⚠️ No videos met ALL boundaries for "${topic}" — views≥100k + age≤6months + short-form`);
+            log(`⚠️ No videos met ALL boundaries for "${topic}" — views≥100k + age≤1year + short-form`);
           } else {
             log(`✅ Found ${fetchData.data.length} verified viral shorts for "${topic}"`);
             fetchData.data.forEach(v => {
@@ -257,7 +257,7 @@ export default function App() {
                 {/* Boundary Status Indicators */}
                 <div className="mt-3 space-y-1">
                   {[
-                    { label: "DATE ≤ 6 MONTHS", color: "text-emerald-400", icon: "🗓️" },
+                    { label: "DATE ≤ 1 YEAR", color: "text-emerald-400", icon: "🗓️" },
                     { label: "VIEWS ≥ 100K", color: "text-emerald-400", icon: "👁️" },
                     { label: "SHORT-FORM ONLY", color: "text-emerald-400", icon: "⏱️" },
                   ].map(b => (
