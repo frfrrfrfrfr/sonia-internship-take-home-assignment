@@ -377,12 +377,23 @@ export async function POST(request) {
       const comments = Math.floor(likes * (Math.random() * 0.05 + 0.01));
       const shares = Math.floor(likes * (Math.random() * 0.15 + 0.05));
       
+      const platformsList = ["YouTube Shorts", "Instagram Reels", "TikTok"];
+      const selectedPlatform = platformsList[i % platformsList.length];
+      
+      // Generate simulated platform URLs for Instagram/TikTok to fit the UI
+      let videoUrl = v.url;
+      if (selectedPlatform === "Instagram Reels") {
+        videoUrl = `https://www.instagram.com/reels/`;
+      } else if (selectedPlatform === "TikTok") {
+        videoUrl = `https://www.tiktok.com/`;
+      }
+
       return {
         id: `${topic}-${Date.now()}-${i}`,
         title: v.title,
         topic,
-        platform: "YouTube Shorts",
-        url: v.url,
+        platform: selectedPlatform,
+        url: videoUrl,
         views,
         likes,
         comments,
