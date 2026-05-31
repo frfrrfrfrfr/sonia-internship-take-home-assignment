@@ -6,19 +6,11 @@ import { Play, CheckCircle2, Activity, Video, Camera, Music, ShieldAlert, Extern
 
 const SAMPLE_TOPICS = [
   "mental health tips",
-  "anxiety relief",
+  "anxiety relief shorts",
   "self care routine",
-  "stress management",
-  "morning routine wellness",
+  "stress management hacks",
+  "healthy habits motivation",
   "mindfulness meditation",
-  "healthy habits",
-  "emotional healing",
-  "burnout recovery",
-  "positive affirmations",
-  "therapy tips",
-  "sleep hacks",
-  "journaling for mental health",
-  "breathing exercises",
   "confidence building",
 ];
 
